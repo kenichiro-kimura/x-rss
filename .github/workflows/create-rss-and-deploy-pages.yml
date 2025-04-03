@@ -18,12 +18,12 @@ jobs:
             node-version: '22'
         - name: Install dependencies
           run: npm install
-        - name: Build RSS
+        - name: Create RSS
           run: npm run start
           env:
             X_BEARER_TOKEN: ${{ secrets.X_BEARER_TOKEN }}
-            X_SEARCH_KEYWORD: ${{ env.X_SEARCH_KEYWORD }}
-            MAX_RESULTS: ${{ env.MAX_RESULTS }}
+            X_SEARCH_KEYWORD: ${{ vars.X_SEARCH_KEYWORD }}
+            MAX_RESULTS: ${{ vars.MAX_RESULTS }}
         - name: upload pages artifact
           id: upload
           uses: actions/upload-pages-artifact@v3

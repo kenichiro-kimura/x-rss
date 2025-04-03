@@ -233,5 +233,5 @@ export async function timerTrigger(myTimer: Timer, context: InvocationContext): 
 app.timer('timerTrigger', {
     schedule: '0 */20 * * * *',
     handler: timerTrigger,
-    runOnStartup: true,
+    runOnStartup: process.env.NODE_ENV === 'development', // 開発環境でのみ true
 });

@@ -111,8 +111,16 @@ async function loadXPostsFromFile(filePath: string): Promise<any[]> {
         const tweets = jsonData.data || [];
         const mediaItems = jsonData.includes?.media || [];
         
+        // リツイートを除外するフィルタリング
+        const filteredTweets = tweets.filter(tweet => {
+            return !tweet.referenced_tweets || 
+                   !tweet.referenced_tweets.some(ref => ref.type === 'retweeted');
+        });
+        
+        console.log(`Total tweets from file: ${tweets.length}, After filtering retweets: ${filteredTweets.length}`);
+        
         // ツイートとメディアを結合（APIレスポンスと同じ形式で処理）
-        return tweets.map(tweet => {
+        return filteredTweets.map(tweet => {
             if (tweet.attachments?.media_keys) {
                 tweet.media = tweet.attachments.media_keys
                     .map(key => mediaItems.find(media => media.media_key === key))

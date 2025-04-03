@@ -31,7 +31,7 @@ async function searchXPosts(keyword: string, maxResults: number = 10): Promise<a
         const requestParams = {
             query: keyword,
             max_results: maxResults,
-            'tweet.fields': 'created_at,author_id,text,entities,public_metrics,attachments',
+            'tweet.fields': 'created_at,author_id,text,entities,public_metrics,attachments,referenced_tweets',
             'expansions': 'attachments.media_keys',
             'media.fields': 'url,preview_image_url,type,alt_text'
         };
@@ -59,9 +59,19 @@ async function searchXPosts(keyword: string, maxResults: number = 10): Promise<a
 
         const tweets = response.data.data || [];
         const mediaItems = response.data.includes?.media || [];
-        
+
+        // リツイートを除外するフィルタリング
+        const filteredTweets = tweets.filter(tweet => {
+            // referenced_tweetsがない、またはリツイートタイプでない投稿のみを含める
+            return !tweet.referenced_tweets || 
+                   !tweet.referenced_tweets.some(ref => ref.type === 'retweeted');
+        });
+
+        // フィルタリング結果をログに出力
+        console.log(`Total tweets: ${tweets.length}, After filtering retweets: ${filteredTweets.length}`);
+
         // ツイートとメディアを結合
-        return tweets.map(tweet => {
+        return filteredTweets.map(tweet => {
             // メディアキーがあればメディア情報を追加
             if (tweet.attachments?.media_keys) {
                 tweet.media = tweet.attachments.media_keys

@@ -10,7 +10,11 @@ X-RSS is a simple RSS creator. It is a simple tool that can be used to create an
 - Azureサブスクリプションにアクセスできること
 - Azureにログインしていること (`az login`)
 
-### デプロイ手順
+### インフラ構築手順
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fkenichiro-kimura.github.io%2Fx-rss%2Fazuredeploy.json)
+
+上記のボタンを押すか、以下の手順に従ってインフラを構築します。
 
 #### 1. リソースグループの作成（既存のリソースグループを使用する場合はスキップ）
 
@@ -84,7 +88,9 @@ az deployment group show \
 az resource list --resource-group rg-xrss --output table
 ```
 
-##### 6. funcitonsのデプロイ
+### アプリケーションのデプロイ
+
+#### 1. funcitonsのデプロイ
 
 ```bash
 % npm instlal
@@ -92,7 +98,7 @@ az resource list --resource-group rg-xrss --output table
 % func azure functionapp publish {FUNCTION_APP_NAME}
 ```
 
-##### 7. 環境変数の設定
+##### 2. 環境変数の設定
 
 関数アプリの設定で、以下の環境変数を設定します。
 

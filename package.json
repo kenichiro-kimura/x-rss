@@ -8,14 +8,17 @@
     "watch": "tsc -w",
     "clean": "rimraf dist",
     "prestart": "npm run clean && npm run build",
-    "start": "node dist/main.js",
+    "start": "node dist/src/main.js",
     "dev": "ts-node src/main.ts",
     "start:azure": "func start",
     "test": "echo \"No tests yet...\""
   },
   "dependencies": {
     "@azure/functions": "^4.0.0",
-    "dotenv": "^16.4.7"
+    "@azure/storage-blob": "^12.27.0",
+    "axios": "^1.8.4",
+    "dotenv": "^16.4.7",
+    "feed": "^4.2.2"
   },
   "devDependencies": {
     "@types/node": "18.x",

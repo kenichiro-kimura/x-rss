@@ -1,0 +1,53 @@
+name: Create RSS and Deploy to GitHub Pages
+
+on:
+  #schedule:
+  #  - cron: "0/20 0 * * *" # Every 20 minutes
+  workflow_dispatch:
+
+jobs:
+  # Build job
+  build:
+    runs-on: ubuntu-latest
+    steps:
+        - name: Checkout repository
+          uses: actions/checkout@v4
+        - name: Setup Node.js
+          uses: actions/setup-node@v3
+          with:
+            node-version: '22'
+        - name: Install dependencies
+          run: npm install
+        - name: Build RSS
+          run: npm run start
+          env:
+            X_BEARER_TOKEN: ${{ secrets.X_BEARER_TOKEN }}
+            X_SEARCH_KEYWORD: ${{ env.X_SEARCH_KEYWORD }}
+            MAX_RESULTS: ${{ env.MAX_RESULTS }}
+        - name: upload pages artifact
+          id: upload
+          uses: actions/upload-pages-artifact@v3
+          with:
+            path: x-rss.xml
+
+  # Deploy job
+  deploy:
+    # Add a dependency to the build job
+    needs: build
+
+    # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
+    permissions:
+      pages: write
+      id-token: write
+
+    # Deploy to the github-pages environment
+    environment:
+      name: github-pages
+      url: ${{ steps.upload.outputs.page_url }}
+
+    # Specify runner + deployment step
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
